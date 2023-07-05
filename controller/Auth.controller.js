@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 // Signup :-> http://localhost:8080/api/auth/signup
 exports.signup = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, isAdmin } = req.body;
 
   // if user with this email exists
   const isUserExists = await AuthModel.findOne({ email });
@@ -25,6 +25,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     name,
     email,
     password: hashPassword,
+    isAdmin,
   });
 
   // send response
@@ -62,7 +63,105 @@ exports.login = asyncHandler(async (req, res, next) => {
     data: {
       token,
       name: isUserExists.name,
+      isAdmin: isUserExists.isAdmin,
     },
   };
   return res.status(200).json(response);
+});
+
+// Get All Users :-> http://localhost:8080/api/auth/getallusers
+exports.getAllUsers = asyncHandler(async (req, res, next) => {
+  // Fetch all users from the database
+  const allUsers = await AuthModel.find();
+
+  // Send response
+  const response = {
+    status: "success",
+    message: "Successfully retrieved all users",
+    data: allUsers,
+  };
+
+  return res.status(200).json(response);
+});
+
+// Update User :-> http://localhost:8080/api/auth/:id
+// exports.updateUser = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { name, email, password, isAdmin } = req.body;
+
+//   // Find the user by ID
+//   const user = await AuthModel.findByIdAndUpdate(id);
+//   if (!user) {
+//     next(new AppError(`User not found with ID: ${id}`, 404));
+//   }
+
+//   // Update user details
+//   user.name = name;
+//   user.email = email;
+//   user.password = password;
+//   user.isAdmin = isAdmin;
+
+//   // Save the updated user
+//   await user.save();
+
+//   // Send response
+//   const response = {
+//     status: "success",
+//     message: "User details updated successfully",
+//     data: user,
+//   };
+
+//   return res.status(200).json(response);
+// });
+exports.updateUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { name, email, password, isAdmin } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await AuthModel.findByIdAndUpdate(id);
+
+    if (!user) {
+      return next(new AppError(`User not found with ID: ${id}`, 404));
+    }
+
+    // Update user details
+    user.name = name;
+    user.email = email;
+    user.password = password;
+    user.isAdmin = isAdmin;
+
+    // Save the updated user
+    await user.save();
+
+    // Send response
+    const response = {
+      status: "success",
+      message: "User details updated successfully",
+      data: user,
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    return next(new AppError("Internal server error", 500));
+  }
+});
+
+// Delete User :-> http://localhost:8080/api/auth/deleteuser/:id
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+  const id = req.params.id;
+
+  try {
+    const user = await AuthModel.findByIdAndRemove(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
