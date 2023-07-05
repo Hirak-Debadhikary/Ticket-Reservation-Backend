@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
 
-const authSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     email: {
       type: String,
       unique: true,
@@ -18,7 +13,12 @@ const authSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    bookings: [{ type: mongoose.Types.ObjectId, ref: "Reservation" }],
+    addedShows: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "TVShows",
+      },
+    ],
   },
 
   {
@@ -27,5 +27,5 @@ const authSchema = new mongoose.Schema(
   }
 );
 
-const AuthModel = mongoose.model("Users", authSchema);
-module.exports = { AuthModel };
+const AdminModel = mongoose.model("Admin", adminSchema);
+module.exports = { AdminModel };

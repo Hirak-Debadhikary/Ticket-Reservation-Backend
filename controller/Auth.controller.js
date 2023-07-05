@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 // Signup :-> http://localhost:8080/api/auth/signup
 exports.signup = asyncHandler(async (req, res, next) => {
-  const { name, email, password, isAdmin } = req.body;
+  const { name, email, password } = req.body;
 
   // if user with this email exists
   const isUserExists = await AuthModel.findOne({ email });
@@ -25,7 +25,6 @@ exports.signup = asyncHandler(async (req, res, next) => {
     name,
     email,
     password: hashPassword,
-    isAdmin,
   });
 
   // send response
@@ -85,37 +84,9 @@ exports.getAllUsers = asyncHandler(async (req, res, next) => {
 });
 
 // Update User :-> http://localhost:8080/api/auth/:id
-// exports.updateUser = asyncHandler(async (req, res, next) => {
-//   const { id } = req.params;
-//   const { name, email, password, isAdmin } = req.body;
-
-//   // Find the user by ID
-//   const user = await AuthModel.findByIdAndUpdate(id);
-//   if (!user) {
-//     next(new AppError(`User not found with ID: ${id}`, 404));
-//   }
-
-//   // Update user details
-//   user.name = name;
-//   user.email = email;
-//   user.password = password;
-//   user.isAdmin = isAdmin;
-
-//   // Save the updated user
-//   await user.save();
-
-//   // Send response
-//   const response = {
-//     status: "success",
-//     message: "User details updated successfully",
-//     data: user,
-//   };
-
-//   return res.status(200).json(response);
-// });
 exports.updateUser = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { name, email, password, isAdmin } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     // Find the user by ID
@@ -129,7 +100,6 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     user.name = name;
     user.email = email;
     user.password = password;
-    user.isAdmin = isAdmin;
 
     // Save the updated user
     await user.save();
