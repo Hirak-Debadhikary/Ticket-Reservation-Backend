@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const { AdminModel } = require("../models/Admin.model");
 const jwt = require("jsonwebtoken");
 
+// Amin Signup -> http://localhost:8080/api/admin/signup
 exports.adminSignup = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -34,6 +35,7 @@ exports.adminSignup = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Amin Login -> http://localhost:8080/api/admin/login
 exports.adminLogin = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -67,6 +69,7 @@ exports.adminLogin = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Get All admins -> http://localhost:8080/api/admin/getAllAdmin
 exports.getAllAdmins = asyncHandler(async (req, res, next) => {
   try {
     // Retrieve all admins from the database

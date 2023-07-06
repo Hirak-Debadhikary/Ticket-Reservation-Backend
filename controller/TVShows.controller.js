@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const { AdminModel } = require("../models/Admin.model");
 
+// Add TVShows -> http://localhost:8080/api/ticket/addTvShows
 exports.addTVShows = asyncHandler(async (req, res, next) => {
   const extractedToken = req.headers.authorization.split(" ")[1];
   if (!extractedToken && extractedToken.trim() === "") {
@@ -63,7 +64,8 @@ exports.addTVShows = asyncHandler(async (req, res, next) => {
   }
   return res.status(201).json({ message: "Show Added Successfully", newShow });
 });
-// GET all TVShows
+
+// GET all TVShows -> http://localhost:8080/api/ticket/getAllTvShows
 exports.getTVShows = asyncHandler(async (req, res, next) => {
   // Fetch all TVShows from the database
   const tvShows = await TVShowsModel.find();
@@ -75,7 +77,7 @@ exports.getTVShows = asyncHandler(async (req, res, next) => {
   return res.status(200).json(tvShows);
 });
 
-// Get a single Movie
+// Get a single TVShow -> http://localhost:8080/api/ticket/:id
 exports.getTVShowsById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 

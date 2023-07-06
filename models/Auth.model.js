@@ -20,11 +20,6 @@ const authSchema = new mongoose.Schema(
     },
     bookings: [{ type: mongoose.Types.ObjectId, ref: "Reservation" }],
   },
-
-  {
-    versionKey: false,
-    timestamps: true,
-  }
 );
 
 const AuthModel = mongoose.model("Users", authSchema);

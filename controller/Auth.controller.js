@@ -3,6 +3,7 @@ const { AuthModel } = require("../models/Auth.model");
 const { AppError } = require("../class/AppError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { ReservationModel } = require("../models/TicketReservation.model");
 
 // Signup :-> http://localhost:8080/api/auth/signup
 exports.signup = asyncHandler(async (req, res, next) => {
@@ -118,7 +119,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Delete User :-> http://localhost:8080/api/auth/deleteuser/:id
+// Delete User :-> http://localhost:8080/api/auth/:id
 exports.deleteUser = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
 
@@ -134,4 +135,24 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
+});
+
+// Get Bookings OF User :-> http://localhost:8080/api/auth/bookings/:id
+exports.getBookingsOfUser = asyncHandler(async (req, res, next) => {
+  // Assuming you have a 'Booking' model or database schema
+
+  // Get the user ID from the request parameters or wherever it's stored
+  const userId = req.params.id;
+
+  // Fetch bookings of the specified user
+  const bookings = await ReservationModel.find({ user: userId });
+
+  if (!bookings) {
+    return res.status(500).json({ message: "Unable to get Bookings" });
+  }
+  // Respond with the bookings
+  res.status(200).json({
+    success: true,
+    data: bookings,
+  });
 });
